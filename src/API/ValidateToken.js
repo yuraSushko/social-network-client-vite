@@ -1,37 +1,37 @@
 import axios from "axios";
 import * as c from "../Utils/Constants.js";
-import error from "eslint-plugin-react/lib/util/error.js";
 
-export default class  ValidateToken{
-    async  ValidateTokenApi(token,setUserName,cookies){
-        if (!token){
-            console.error("Token invalid",error);
-            return;
-        }
-        console.log("token in validateapifunc",token)
-        try{
-
-            const response = await axios.post(`${c.serverUrl}${c.validateTokenEndPoint}`,{},
-                {
-                    headers:{
-                    Authorization: `Bearer ${token}`
-                    }
-                }
-
-            );
-            console.log(response)
-
-            if(response.data.success && setUserName){
-                setUserName(response.data.message)
-            }else {
-                cookies.remove("token",{path: "/"});
-                console.log("token is missing")
+export default class ValidateToken {
+    async validateTokenApi(token, navigate, cookies,setUsername) {
+        try {
+            if (!token) {
+                console.warn("Token is missing");
+                return;
             }
 
-        }catch (error){
-            console.log("Error to fetching token: ", error);
-        }
+            const response = await axios.post(
+                `${c.serverUrl}/validateToken`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log("Fetched token details:", response.data);
+            if (!response.data.valid) {
+                cookies.remove("token", { path: "/" });
+                navigate("/SingIn");
+                console.log("Token is missing")
+            }else {
+                if (setUsername) {
+                    setUsername(response.data.username);
+                    return response.data.username
+                }
+            }
+        } catch (error) {
+            console.error("Error validating token:", error);
+            cookies.remove("token", { path: "/" });
+            navigate("/SingIn");        }
     }
-
-
 }

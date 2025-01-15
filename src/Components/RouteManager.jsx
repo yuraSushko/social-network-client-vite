@@ -1,73 +1,67 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Navbar from "./Navbar.jsx";
+import {Route, Routes, useNavigate} from "react-router-dom";
+
 import Feed from "../Pages/Feed.jsx";
-import * as c from "../Utils/Constants.js";
 import Profile from "../Pages/Profile.jsx";
 import SignIn from "../Pages/SignIn.jsx";
 import SignUp from "../Pages/SignUp.jsx";
 import Cookies from "universal-cookie";
 import {useEffect, useState} from "react";
 import ValidateToken from "../API/ValidateToken.js";
+import NavBar from "./Navbar.jsx";
 
 export default function RouteManager(){
     const cookies = new Cookies();
-    const [userName,setUserName] = useState("");
     const token = cookies.get("token");
-    console.log(token , "ssssss")
+    const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    console.log("home page token check", token);
 
-    const fetchToken= async ()=>{
-        try{
+
+    const fetchToken = async ()=> {
+        try {
             const api = new ValidateToken();
-            await api.ValidateTokenApi(token,setUserName,cookies)
-        }catch (e) {
-            console.log(e)
+            await api.validateTokenApi(token,navigate,cookies,setUsername);
+        }catch (error){
+            console.log("Error to fetching token",error);
         }
     }
 
 
     useEffect(() => {
-        console.log("checking if there is token routemanger",token)
-        if(token){
-            fetchToken()
-            console.log("Hello", userName)
+        if (token) {
+            fetchToken();
+            console.log("check login")
+            console.log("Username passed to manger:", username);
         }
-        else{console.log("no token")}
-    }, [token, setUserName, cookies, userName]);
+    }, [token, navigate, cookies,username]);
 
 
-
+    const handleLogout = () => {
+        cookies.remove("token", {path: "/"});
+        navigate("/SignIn");
+    };
 
 
 
     return (
-        <div>
-
-                <Navbar/>
-
+        <>
+            <NavBar isLoggedIn={!!token} onLogout={handleLogout}/>
 
                 <Routes>
-                    {token &&(
-                        <>
-                            <Route path={c.feedRoute} element={<Feed/>}/>
-                            {/*<Route path={c.feedRoute} element={<Feed/>}/>*/}
-                            <Route path={c.myProfileRoute} element={<Profile/>}/>
-                            {/*//TODO make profile for me and other users just change endPoint */}
-                        </>
-                    )}
                     {!token &&(
                         <>
-                            <Route path="/" element={<SignIn/>}/>
-                            {/*<Route path={c.signInRoute} element={<SignIn/>}/>*/}
-                            <Route path={c.signUpRoute} element={<SignUp/>}/>
+                            <Route path="/SignIn" element={<SignIn onLogin={() => navigate("/Feed")}/>}/>
+                            <Route path={"/SignUp"} element={<SignUp/>}/>
+
+                        </>
+                    )}
+                    {token &&(
+                        <>
+                            <Route path={"/Feed"} element={<Feed/>}/>
+                            <Route path={"/MyProfile"} element={<Profile/>}/>
                         </>
                     )}
                 </Routes>
-
-
-
-
-        </div>
-    )
-
-
+        </>
+    );
 }

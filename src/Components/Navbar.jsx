@@ -1,46 +1,71 @@
-import {useNavigate} from "react-router-dom";
-import * as c from "../Utils/Constants.js";
-import Cookies from "universal-cookie"
+import {NavLink} from "react-router-dom";
 
-
-
-
-export default function Navbar(){
-    const cookies = new Cookies();
-    const token = cookies.get("token");
-    const  navigate = useNavigate();
-    console.log("NAVBAR TOKEN " + token)
-
-    const signOut=()=>{
-        try{
-            cookies.remove("token",{path: "/"})
-            navigate("/")
-        }catch (e) {
-            console.log("tried to remove token: ",e)
-        }
-    }
-
-
-
-
-    const appNavBar=()=>{
-        return (
-            <div>
-            <button onClick={()=> navigate(c.feedRoute)}> feed</button>
-
-            <button onClick={()=> navigate(c.myProfileRoute)}> Profile</button>
-
-            <button onClick={()=> signOut()}> logout</button>
-            </div>
-        )
-    }
-
-
+export default function NavBar({isLoggedIn, onLogout}) {
     return (
-        <div>
-            {/*{token && (appNavBar())}*/}
-            {appNavBar()}
+        <nav className="navbar-container">
+            <div className="navbar-content">
 
-        </div>
-    )
+                <ul className="navbar-list">
+                    {!isLoggedIn && (
+                        <>
+                            <li>
+                                <NavLink
+                                    to={"/SignIn"}
+                                    className={({isActive}) =>
+                                        isActive ? "nav-link active" : "nav-link"
+                                    }
+                                >
+                                    <strong>Sign In</strong><br/>&nbsp;
+                                </NavLink>
+                            </li>
+
+                            <li>
+                                <NavLink
+                                    to={"/SignUp"}
+                                    className={({isActive}) =>
+                                        isActive ? "nav-link active" : "nav-link"
+                                    }
+                                >
+                                    <strong> Sign Up</strong><br/>&nbsp;
+                                </NavLink>
+                            </li>
+
+                        </>
+                    )}
+
+                    {isLoggedIn && (
+                        <>
+
+                            <li>
+                                <NavLink
+                                    to={"/Feed"}
+                                    className={({isActive}) =>
+                                        isActive ? "nav-link active" : "nav-link"
+                                    }>
+                                    <strong> Feed</strong><br/>&nbsp;
+                                </NavLink>
+                            </li>
+
+                            <li>
+                                <NavLink
+                                    to={"/MyProfile"}
+                                    className={({isActive}) =>
+                                        isActive ? "nav-link active" : "nav-link"
+                                    }
+                                >
+                                    <strong>My Profile</strong><br/>
+                                </NavLink>
+                            </li>
+
+                            <li>
+                                <button className="logout-button" onClick={onLogout}>
+                                    <span>Logout</span>
+                                </button>
+                            </li>
+                        </>
+                    )}
+                </ul>
+            </div>
+        </nav>
+    );
 }
