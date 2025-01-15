@@ -117,14 +117,10 @@ export default function SignUp(){
                 phoneNumber: phoneNumber
             }
 
-            console.log(user)
             const  response = await axios.post(`${c.serverUrl}${c.signUpEndPoint}`, user)
-            console.log(response)
-            console.log(response.status)
 
             if(response.status===200){
-                console.log(response.data.success,response.data.message)
-                response.data.success ? navigate(c.signInEndPoint) : setResponseData(response.data.message)
+                response.data.success ? navigate(c.signInRoute) : setResponseData(response.data.message)
                 return response.data.success
             }
         } catch (e) {

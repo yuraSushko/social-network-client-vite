@@ -3,7 +3,8 @@ import axios from "axios";
 import * as c from "../Utils/Constants.js"
 import { useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie"
-import { useAuth} from "../Components/AuthContext.jsx";
+// import { useAuth} from "../Components/AuthContext.jsx";
+import {signUpRoute} from "../Utils/Constants.js";
 export default function SignIn(){
     const [userName,setUserName]=useState("");
     const [password,SetPassword]=useState("");
@@ -15,8 +16,7 @@ export default function SignIn(){
 
 
     const handleNavigate=()=>{
-        console.log("Navigate  signUp")
-        navigate(c.signUpEndPoint)
+        navigate(c.signUpRoute)
     }
 
     const handleSignIn  = async ()=> {
@@ -25,17 +25,14 @@ export default function SignIn(){
                 userName: userName,
                 password: password
             }
-            console.log(data)
             const response = await axios.get(`${c.serverUrl}${c.signInEndPoint}`,{params:data} )
-            console.log(response)
             if (response.status===200){
                 // console.log(response.data.success,response.data.message)
 
                 if(response.data.success){
-                    console.log("success")
                     setResponseData(response.data)
                     const cookie = new Cookies()
-                    cookie.set("token",response.data.message, {expires: new Date(Date.now() + 60 * 60 * 1000)} )
+                    cookie.set("token",response.data.message,  {path:"/", expires: new Date(Date.now() + 60 * 60 * 1000)} )
                     // setIsSignedIn(true)
                     navigate(c.feedRoute)
 

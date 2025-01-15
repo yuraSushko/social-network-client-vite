@@ -1,12 +1,7 @@
 import './App.css'
-import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
-import SignIn from "./Pages/SignIn.jsx";
-import SignUp from "./Pages/SignUp.jsx";
-import Feed from "./Pages/Feed.jsx";
-import Profile from "./Pages/Profile.jsx";
-import * as c from "/src/Utils/Constants.js"
-import Navbar from "./Components/Navbar.jsx";
-import Cookies from "universal-cookie";
+
+import RouteManager from "./Components/RouteManager.jsx";
+import {BrowserRouter} from "react-router-dom";
 
 
 export default function App() {
@@ -50,44 +45,15 @@ export default function App() {
     // const { token } = useAuth()//useContext(AuthContext);
 
 
-    const cookie = new Cookies();
-    const token = cookie.get("token")
 
-    const timer = setInterval(() => {
-        console.log("in app.jsx token", token);
-    }, 3000);
-   ()=>timer();
 
     return (
-        <div>
-            <BrowserRouter>
+      <div>
+          <BrowserRouter>
 
-                <Navbar/>
-
-
-                <Routes>
-                    {token &&(
-                    <>
-                    <Route path={"/"} element={<Feed/>}/>
-                    {/*<Route path={c.feedRoute} element={<Feed/>}/>*/}
-                    <Route path={c.myProfileRoute} element={<Profile/>}/>
-                    {/*//TODO make profile for me and other users just change endPoint */}
-                    </>
-                    )}
-                    {!token &&(
-                        <>
-                            <Route path="/" element={<SignIn/>}/>
-                            {/*<Route path={c.signInRoute} element={<SignIn/>}/>*/}
-                            <Route path={c.signUpRoute} element={<SignUp/>}/>
-                        </>
-                    )}
-                </Routes>
-
-
-            </BrowserRouter>
-
-
-        </div>
+          <RouteManager/>
+          </BrowserRouter>
+      </div>
     )
 }
 
