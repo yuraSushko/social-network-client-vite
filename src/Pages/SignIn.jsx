@@ -34,7 +34,7 @@ export default function SignIn(){
                     const cookie = new Cookies()
                     cookie.set("token",response.data.message,  {path:"/", expires: new Date(Date.now() + 60 * 60 * 1000)} )
                     // setIsSignedIn(true)
-                    navigate(c.feedRoute)
+                    navigate("/Feed")
 
 
                 }

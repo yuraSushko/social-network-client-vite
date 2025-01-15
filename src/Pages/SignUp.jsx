@@ -29,7 +29,11 @@ export default function SignUp(){
           checkRePassword() &&
           checkEmailIsValid() &&
           checkPhoneNumber()
-         ){createUser()}
+         ){
+           createUser()
+           navigate("/SignIn");
+
+       }
     }
 
 
