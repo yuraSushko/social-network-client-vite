@@ -1,7 +1,9 @@
 import  {useState} from 'react';
 import axios from "axios";
-import * as c from "../Utils/Constants.js"
+import * as c from "/src/Utils/Constants.js";
 import { useNavigate} from "react-router-dom";
+import  defaultProfilePic from '/src/Utils/Photos/defaultPorfilePic.png'
+
 export default function SignUp(){
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
@@ -23,16 +25,15 @@ export default function SignUp(){
     //     console.log("Navigate  signIn")
     //     navigate("/signIn")
     // }
-    const handleSignIn  = async ()=> {
+    const handleSignUp  = async ()=> {
        if(checkUserName() &&
           checkPassword() &&
           checkRePassword() &&
           checkEmailIsValid() &&
-          checkPhoneNumber()
+          checkPhoneNumber() &&
+          await createUser()
          ){
-           createUser()
-           navigate("/SignIn");
-
+           console.log("created user")
        }
     }
 
@@ -44,11 +45,11 @@ export default function SignUp(){
 
     const checkUserName = () => {
         let valid = true
-        if(checkStr(userName) && userName.length>=3 && userName.length<=20){
+        if(checkStr(userName) && userName.length>=3 && userName.length<=20 && !userName.includes(";")){
             setErrorUserName("")
         }
         else {
-            setErrorUserName("userName should be between 3 abd 20 characters")
+            setErrorUserName("userName should be between 3 abd 20 ")
             valid= false
 
         }
@@ -113,22 +114,28 @@ export default function SignUp(){
 
 
     const createUser= async ()=>{
+
+
+
         try {
+
+
             const user = {
                 userName: userName,
                 password: password,
                 email: email,
-                phoneNumber: phoneNumber
+                phoneNumber: phoneNumber,
             }
 
-            const  response = await axios.post(`${c.serverUrl}${c.signUpEndPoint}`, user)
+            const  response = await axios.post(`${c.API.USER.SIGN_UP_END_POINT}`, user)
 
             if(response.status===200){
-                response.data.success ? navigate(c.signInRoute) : setResponseData(response.data.message)
+                response.data.success ? navigate(c.ROUTES.AUTH.SIGN_IN) : setResponseData(response.data.message)
                 return response.data.success
             }
         } catch (e) {
             console.log(e)
+            return false
         }
     }
 
@@ -168,7 +175,7 @@ export default function SignUp(){
             </div>
 
             <div>
-                <button onClick={handleSignIn}>Sign Up</button>
+                <button onClick={handleSignUp}>Sign Up</button>
             </div>
         </div>
     )

@@ -1,71 +1,97 @@
 import {NavLink} from "react-router-dom";
+import * as c from "/src/Utils/Constants.js";
+
+// <ul className="nav nav-tabs">
+//     <li className="nav-item">
+//         <a className="nav-link active" aria-current="page" href="#">Active</a>
+//     </li>
+//     <li className="nav-item">
+//         <a className="nav-link" href="#">Link</a>
+//     </li>
+//     <li className="nav-item">
+//         <a className="nav-link disabled" aria-disabled="true">Disabled</a>
+//     </li>
+// </ul>
 
 export default function NavBar({isLoggedIn, onLogout}) {
+
+    const loggedInNavbar=()=>{
+        return (
+            <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.FEED}
+                        aria-current="page"
+                    >
+                        Feed
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.SEARCH}
+                        aria-current="page"
+                    >
+                        Search
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.MY_PROFILE}
+                        aria-current="page"
+                    >
+                        My Profile
+                    </NavLink>
+                </li>
+
+                <li className="nav-item">
+                    <button className=" btn btn-outline-danger" onClick={onLogout} aria-current="page">
+                        Logout
+                    </button>
+                </li>
+            </ul>
+
+        )
+    }
+
+
+    const loggedOutNavbar = () => {
+        return (
+            <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.AUTH.SIGN_IN}
+                        aria-current="page"
+                    >
+                        Sign In
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.AUTH.SIGN_UP}
+                        aria-current="page"
+                    >
+                        Sign Up
+                    </NavLink>
+                </li>
+            </ul>
+        )
+    }
+
+
     return (
-        <nav className="navbar-container">
-            <div className="navbar-content">
 
-                <ul className="navbar-list">
-                    {!isLoggedIn && (
-                        <>
-                            <li>
-                                <NavLink
-                                    to={"/SignIn"}
-                                    className={({isActive}) =>
-                                        isActive ? "nav-link active" : "nav-link"
-                                    }
-                                >
-                                    <strong>Sign In</strong><br/>&nbsp;
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink
-                                    to={"/SignUp"}
-                                    className={({isActive}) =>
-                                        isActive ? "nav-link active" : "nav-link"
-                                    }
-                                >
-                                    <strong> Sign Up</strong><br/>&nbsp;
-                                </NavLink>
-                            </li>
-
-                        </>
-                    )}
-
-                    {isLoggedIn && (
-                        <>
-
-                            <li>
-                                <NavLink
-                                    to={"/Feed"}
-                                    className={({isActive}) =>
-                                        isActive ? "nav-link active" : "nav-link"
-                                    }>
-                                    <strong> Feed</strong><br/>&nbsp;
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink
-                                    to={"/MyProfile"}
-                                    className={({isActive}) =>
-                                        isActive ? "nav-link active" : "nav-link"
-                                    }
-                                >
-                                    <strong>My Profile</strong><br/>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <button className="logout-button" onClick={onLogout}>
-                                    <span>Logout</span>
-                                </button>
-                            </li>
-                        </>
-                    )}
-                </ul>
+        // <nav className="navbar-container">
+            <div >
+                {isLoggedIn && (loggedInNavbar())}
+                {!isLoggedIn && (loggedOutNavbar())}
             </div>
-        </nav>
+        // </nav>
     );
+
+
 }

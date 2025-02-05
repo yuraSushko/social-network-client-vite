@@ -1,10 +1,10 @@
-import {useContext, useState} from 'react';
+import { useState} from 'react';
 import axios from "axios";
-import * as c from "../Utils/Constants.js"
+
 import { useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie"
 // import { useAuth} from "../Components/AuthContext.jsx";
-import {signUpRoute} from "../Utils/Constants.js";
+import * as c from "/src/Utils/Constants.js";
 export default function SignIn(){
     const [userName,setUserName]=useState("");
     const [password,SetPassword]=useState("");
@@ -16,27 +16,25 @@ export default function SignIn(){
 
 
     const handleNavigate=()=>{
-        navigate(c.signUpRoute)
+        navigate(c.ROUTES.AUTH.SIGN_UP)
     }
 
     const handleSignIn  = async ()=> {
         try {
-            const data = {
+            const params = {
                 userName: userName,
                 password: password
             }
-            const response = await axios.get(`${c.serverUrl}${c.signInEndPoint}`,{params:data} )
+
+            const response = await axios.post(`${c.API.USER.SIGN_IN_END_POINT}`,{},{params:params}  )
             if (response.status===200){
                 // console.log(response.data.success,response.data.message)
-
+                setResponseData(response.data.message)
                 if(response.data.success){
-                    setResponseData(response.data)
                     const cookie = new Cookies()
                     cookie.set("token",response.data.message,  {path:"/", expires: new Date(Date.now() + 60 * 60 * 1000)} )
                     // setIsSignedIn(true)
-                    navigate("/Feed")
-
-
+                    navigate(c.ROUTES.PAGES.FEED)
                 }
             }
         } catch (e) {

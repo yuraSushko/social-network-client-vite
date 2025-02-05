@@ -1,8 +1,8 @@
 import axios from "axios";
-import * as c from "../Utils/Constants.js";
+import * as c from "/src/Utils/Constants.js";
 
 export default class ValidateToken {
-    async validateTokenApi(token, navigate, cookies,setUsername) {
+    async validateTokenApi(token, navigate, cookies,setUserName,setUserId) {
         try {
             if (!token) {
                 console.warn("Token is missing");
@@ -10,7 +10,9 @@ export default class ValidateToken {
             }
 
             const response = await axios.post(
-                `${c.serverUrl}/validateToken`,
+
+
+                `${c.API.USER.VALIDATE_TOKEN_END_POINT}`,
                 {},
                 {
                     headers: {
@@ -18,20 +20,22 @@ export default class ValidateToken {
                     },
                 }
             );
-            console.log("Fetched token details:", response.data);
             if (!response.data.valid) {
                 cookies.remove("token", { path: "/" });
-                navigate("/SingIn");
-                console.log("Token is missing")
+                navigate(c.ROUTES.AUTH.SIGN_IN);
             }else {
-                if (setUsername) {
-                    setUsername(response.data.username);
-                    return response.data.username
+                if (setUserName && setUserId) {
+                    setUserName(response.data.userName);
+                    console.log("from token response.data.userName" ,response.data.userName)
+                    setUserId(response.data.userId);
+                    console.log("from token response.data.userId" ,response.data.userId)
+
                 }
             }
         } catch (error) {
             console.error("Error validating token:", error);
             cookies.remove("token", { path: "/" });
-            navigate("/SingIn");        }
+            navigate(c.ROUTES.AUTH.SIGN_IN);
+        }
     }
 }
