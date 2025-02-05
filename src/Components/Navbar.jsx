@@ -1,54 +1,97 @@
-import {useNavigate} from "react-router-dom";
-import * as c from "../Utils/Constants.js";
-import Cookies from "universal-cookie"
-import {useEffect, useState} from "react";
+import {NavLink} from "react-router-dom";
+import * as c from "/src/Utils/Constants.js";
 
+// <ul className="nav nav-tabs">
+//     <li className="nav-item">
+//         <a className="nav-link active" aria-current="page" href="#">Active</a>
+//     </li>
+//     <li className="nav-item">
+//         <a className="nav-link" href="#">Link</a>
+//     </li>
+//     <li className="nav-item">
+//         <a className="nav-link disabled" aria-disabled="true">Disabled</a>
+//     </li>
+// </ul>
 
-export default function Navbar(){
-    const cookies = new Cookies();
-    const [token,setToken]=useState();
-    const  navigate = useNavigate();
-    useEffect(() => {
+export default function NavBar({isLoggedIn, onLogout}) {
 
-    setToken(cookies.get("token"))
-    }, [navigate ]);
+    const loggedInNavbar=()=>{
+        return (
+            <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.FEED}
+                        aria-current="page"
+                    >
+                        Feed
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.SEARCH}
+                        aria-current="page"
+                    >
+                        Search
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.PAGES.MY_PROFILE}
+                        aria-current="page"
+                    >
+                        My Profile
+                    </NavLink>
+                </li>
 
+                <li className="nav-item">
+                    <button className=" btn btn-outline-danger" onClick={onLogout} aria-current="page">
+                        Logout
+                    </button>
+                </li>
+            </ul>
 
-
-    const timer = setInterval(() => {
-        console.log("in navbar.jsx token", token);
-    }, 1000);
-    ()=>timer();
-
-    const signOut=()=>{
-        try{
-            cookies.remove("token")
-        }catch (e) {
-            console.log("tried to remove token: ",e)
-        }
+        )
     }
 
 
-
-
-    const appNavBar=()=>{
+    const loggedOutNavbar = () => {
         return (
-            <div>
-            <button onClick={()=> navigate(c.feedRoute)}> feed</button>
-
-            <button onClick={()=> navigate(c.myProfileRoute)}> Profile</button>
-
-            <button onClick={()=> signOut()}> logout</button>
-            </div>
+            <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.AUTH.SIGN_IN}
+                        aria-current="page"
+                    >
+                        Sign In
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({isActive}) => (isActive ? "nav-link active" : "nav-link")}
+                        to={c.ROUTES.AUTH.SIGN_UP}
+                        aria-current="page"
+                    >
+                        Sign Up
+                    </NavLink>
+                </li>
+            </ul>
         )
     }
 
 
     return (
-        <div>
-            {token && (appNavBar())}
+
+        // <nav className="navbar-container">
+            <div >
+                {isLoggedIn && (loggedInNavbar())}
+                {!isLoggedIn && (loggedOutNavbar())}
+            </div>
+        // </nav>
+    );
 
 
-        </div>
-    )
 }
